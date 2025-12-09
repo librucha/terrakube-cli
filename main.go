@@ -1,10 +1,19 @@
 package main
 
-import "terrakube/cmd"
+import (
+	"fmt"
+	"os"
+	"terrakube/cmd"
+	"time"
 
-var version = "DEV"
+	"github.com/fatih/color"
+)
+
+var version = fmt.Sprintf("DEV-%s", time.Now().Format("20060102T150405"))
 
 func main() {
-	cmd.SetVersion(version)
-	cmd.Execute()
+	if err := cmd.NewRootCmd(version).Execute(); err != nil {
+		color.HiRed(err.Error())
+		os.Exit(1)
+	}
 }

@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"net/url"
 	"strings"
+	"terrakube/internal/debug"
 
 	"github.com/google/jsonapi"
 )
@@ -30,7 +31,7 @@ var defaultPath = "/api/v1/"
 
 func (c *Client) newRequest(method, path string, body interface{}) (*http.Request, error) {
 	resolvedPath := c.BasePath + path
-	if strings.HasPrefix(resolvedPath, "/") {
+	if strings.HasPrefix(path, "/") {
 		resolvedPath = path
 	}
 	rel := &url.URL{Path: resolvedPath}
@@ -105,8 +106,15 @@ func (c *Client) do(req *http.Request, v interface{}) (*http.Response, error) {
 }
 
 func NewClient(httpClient *http.Client, token string, baseUrl *url.URL) *Client {
+
+	transport := &debug.LoggingTransport{
+		Next: http.DefaultTransport,
+	}
+
 	if httpClient == nil {
-		httpClient = http.DefaultClient
+		httpClient = &http.Client{
+			Transport: transport,
+		}
 	}
 
 	c := &Client{HttpClient: httpClient}

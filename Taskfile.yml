@@ -50,12 +50,15 @@ tasks:
       - go test "./..."
 
   install:
-    desc: Test module
+    desc: Install module
+    deps:
+      - fmt
     sources:
       - ./**/*.go
       - ./**/go.mod
     cmds:
       - go install "./..."
+      - cp "${HOME}/go/bin/terrakube" "/usr/local/bin/terrakube"
 
   upgrade:
     desc: Upgrade dependencies

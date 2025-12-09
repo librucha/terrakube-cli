@@ -12,7 +12,7 @@ var JobCreateExample string = `Create a new job
 
 var JobCreateOrgId string
 var JobCreateWorkspaceId string
-var JObCreateTemplateReference string
+var JobCreateTemplateReference string
 
 var createJobCmd = &cobra.Command{
 	Use:   "create",
@@ -25,7 +25,7 @@ var createJobCmd = &cobra.Command{
 
 func init() {
 	jobCmd.AddCommand(createJobCmd)
-	createJobCmd.Flags().StringVarP(&JObCreateTemplateReference, "template-reference", "t", "", "Job template reference: <UUID> (required)")
+	createJobCmd.Flags().StringVarP(&JobCreateTemplateReference, "template-reference", "t", "", "Job template reference: <UUID> (required)")
 	_ = createJobCmd.MarkFlagRequired("template-reference")
 	createJobCmd.Flags().StringVarP(&JobCreateOrgId, "organization-id", "", "", "Organization Id (required)")
 	_ = createJobCmd.MarkFlagRequired("organization-id")
@@ -38,7 +38,7 @@ func createJob() {
 
 	job := models.Job{
 		Attributes: &models.JobAttributes{
-			TemplateReference: JObCreateTemplateReference,
+			TemplateReference: JobCreateTemplateReference,
 		},
 		Type: "job",
 		Relationships: &models.JobRelationships{

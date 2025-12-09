@@ -10,6 +10,7 @@ import (
 	"reflect"
 	"regexp"
 	"strings"
+	"terrakube/internal/debug"
 
 	"github.com/fatih/color"
 	"github.com/kataras/tablewriter"
@@ -34,14 +35,9 @@ terrakube is a CLI to handle remote terraform workspace and modules in organizat
 and handle all the lifecycle (plan, apply, destroy).`,
 }
 
-func SetVersion(version string) {
+func NewRootCmd(version string) *cobra.Command {
 	rootCmd.Version = version
-}
-
-// Execute adds all child commands to the root command and sets flags appropriately.
-// This is called by main.main(). It only needs to happen once to the rootCmd.
-func Execute() {
-	cobra.CheckErr(rootCmd.Execute())
+	return rootCmd
 }
 
 func init() {
@@ -51,6 +47,8 @@ func init() {
 	rootCmd.PersistentFlags().StringVar(&output, "output", "json", "Use json, table, tsv or none to format CLI output")
 	_ = viper.BindPFlag("output", rootCmd.Flags().Lookup("output"))
 	_ = rootCmd.Flags().BoolP("toggle", "t", false, "Help message for toggle")
+
+	rootCmd.PersistentFlags().BoolVar(&debug.Enabled, "debug", false, "Enable debug mode")
 
 	cobra.AddTemplateFunc("StyleHeading", color.New(color.FgCyan).SprintFunc())
 	usageTemplate := rootCmd.UsageTemplate()
