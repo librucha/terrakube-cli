@@ -21,14 +21,19 @@ type Client struct {
 	Variable     *VariableClient
 	Job          *JobClient
 	Team         *TeamClient
+	Doc          *DocClient
 	HttpClient   *http.Client
 	BasePath     string
 }
 
-var defaultPath string = "/api/v1/"
+var defaultPath = "/api/v1/"
 
 func (c *Client) newRequest(method, path string, body interface{}) (*http.Request, error) {
-	rel := &url.URL{Path: c.BasePath + path}
+	resolvedPath := c.BasePath + path
+	if strings.HasPrefix(resolvedPath, "/") {
+		resolvedPath = path
+	}
+	rel := &url.URL{Path: resolvedPath}
 	u := c.BaseURL.ResolveReference(rel)
 	var buf io.ReadWriter
 	if body != nil {
@@ -113,6 +118,7 @@ func NewClient(httpClient *http.Client, token string, baseUrl *url.URL) *Client 
 	c.Variable = &VariableClient{Client: c}
 	c.Team = &TeamClient{Client: c}
 	c.Job = &JobClient{Client: c}
+	c.Doc = &DocClient{Client: c}
 
 	// Handle base path
 	if baseUrl.Path == "" {

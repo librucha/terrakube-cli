@@ -1,0 +1,76 @@
+# https://taskfile.dev
+
+version: "3"
+
+env:
+  BUILD_DIR: build
+  DIST_DIR: dist
+
+tasks:
+
+  fmt:
+    cmds:
+      - go fmt
+
+  dev:
+    cmds:
+      - pwd
+
+  clean:
+    desc: Cleanup
+    cmds:
+      - rm -rf $BUILD_DIR
+      - rm -rf $DIST_DIR
+
+  build:
+    desc: Build the binary
+    sources:
+      - ./**/*.go
+      - ./**/go.mod
+    cmds:
+      - goreleaser build --snapshot --single-target --clean
+
+  build:linux:
+    desc: Build linux amd64 binary
+    sources:
+      - ./**/*.go
+      - ./**/go.mod
+    cmds:
+      - goreleaser build --snapshot --single-target --clean
+    env:
+      GOOS: linux
+      GOARCH: amd64
+
+  test:
+    desc: Test module
+    sources:
+      - ./**/*.go
+      - ./**/go.mod
+    cmds:
+      - go test "./..."
+
+  install:
+    desc: Test module
+    sources:
+      - ./**/*.go
+      - ./**/go.mod
+    cmds:
+      - go install "./..."
+
+  upgrade:
+    desc: Upgrade dependencies
+    sources:
+      - ./**/go.mod
+    generates:
+      - ./**/go.sum
+    cmds:
+      - go get -u "./..."
+
+  release:
+    desc: Build the binary
+    cmds:
+      - goreleaser release --clean
+
+  tidy:
+    desc: Run go mod tidy on all modules
+    cmd: find . -name go.mod | xargs dirname | xargs -I{dir} sh -c "cd {dir}; echo 'Processing {dir}' ; go mod tidy"

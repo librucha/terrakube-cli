@@ -34,6 +34,10 @@ terrakube is a CLI to handle remote terraform workspace and modules in organizat
 and handle all the lifecycle (plan, apply, destroy).`,
 }
 
+func SetVersion(version string) {
+	rootCmd.Version = version
+}
+
 // Execute adds all child commands to the root command and sets flags appropriately.
 // This is called by main.main(). It only needs to happen once to the rootCmd.
 func Execute() {

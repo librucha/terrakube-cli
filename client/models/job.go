@@ -39,6 +39,9 @@ type JobAttributes struct {
 	// status
 	// Enum: [pending queue running completed]
 	Status string `json:"status,omitempty"`
+
+	// templateReference
+	TemplateReference string `json:"templateReference,omitempty"`
 }
 
 type JobRelationships struct {

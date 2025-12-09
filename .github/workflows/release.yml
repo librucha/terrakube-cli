@@ -1,6 +1,15 @@
-on: 
-  release:
-    types: [created]
+name: release
+on:
+  push:
+    branches:
+      - "main"
+    tags:
+      - "v*"
+permissions:
+  contents: write
+  id-token: write
+  packages: write
+  attestations: write
 
 jobs:
   releases-matrix:
@@ -22,17 +31,3 @@ jobs:
         goos: ${{ matrix.goos }}
         goarch: ${{ matrix.goarch }}
         binary_name: "terrakube"
-  homebrew:
-    needs: releases-matrix
-    name: Bump Homebrew formula
-    runs-on: ubuntu-latest
-    steps:
-      - uses: mislav/bump-homebrew-formula-action@v1
-        with:
-          formula-name: terrakube
-          homebrew-tap: terrakube-io/homebrew-cli
-          download-url: https://github.com/terrakube-io/terrakube-cli/releases/download/${{ github.event.release.tag_name }}/terrakube-${{ github.event.release.tag_name }}-darwin-amd64.tar.gz
-          commit-message: |
-            Updated {{formulaName}} to {{version}}
-        env:
-          COMMITTER_TOKEN: ${{ secrets.HOMEBREW_TOKEN }}
